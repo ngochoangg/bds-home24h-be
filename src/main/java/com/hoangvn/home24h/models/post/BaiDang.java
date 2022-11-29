@@ -42,6 +42,9 @@ public class BaiDang {
     @Column(name = "da_ban_chua")
     private boolean daBan;
 
+    @Column(name = "gia_tien")
+    private double giaTien;
+
     @Temporal(TemporalType.TIMESTAMP)
     @CreatedDate
     @Column(nullable = true, name = "ngay_tao")
@@ -138,6 +141,14 @@ public class BaiDang {
 
     public void setNgayCapNhat(Date ngayCapNhat) {
         this.ngayCapNhat = ngayCapNhat;
+    }
+
+    public double getGiaTien() {
+        return giaTien;
+    }
+
+    public void setGiaTien(double giaTien) {
+        this.giaTien = giaTien;
     }
 
 }

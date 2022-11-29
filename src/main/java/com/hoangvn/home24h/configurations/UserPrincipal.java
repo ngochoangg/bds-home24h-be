@@ -1,4 +1,4 @@
-package com.hoangvn.home24h.sercurity;
+package com.hoangvn.home24h.configurations;
 
 import java.util.Collection;
 
