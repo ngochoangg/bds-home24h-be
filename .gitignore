@@ -31,3 +31,19 @@ build/
 
 ### VS Code ###
 .vscode/
+
+### resource ###
+**/application.properties
+
+
+# What you need to do is the following:
+
+# git rm --cached project.properties
+
+# and for gen/*
+
+# git rm --cached gen/
+
+# Then commit.
+
+# the --cached option will unstage and remove paths only from the index. Working tree files, whether modified or not, will be left alone. git-rm
