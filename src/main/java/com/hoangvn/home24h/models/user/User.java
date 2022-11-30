@@ -7,12 +7,12 @@ import javax.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "users")
-public class User extends BaseEntity {
+public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
-    @Column(name = "ho_ten", nullable = false)
+    @Column(name = "ho_ten")
     @NotNull(message = "Ho ten thieu!")
     private String hoTen;
 
@@ -30,7 +30,7 @@ public class User extends BaseEntity {
 
     private String password;
 
-    @ManyToMany(cascade = CascadeType.REFRESH, fetch = FetchType.EAGER)
+    @ManyToMany(cascade = { CascadeType.REFRESH }, fetch = FetchType.EAGER)
     @JoinTable(name = "user_role", joinColumns = { @JoinColumn(name = "user_id") }, inverseJoinColumns = {
             @JoinColumn(name = "role_id") })
     private Set<Role> roles;
@@ -59,7 +59,6 @@ public class User extends BaseEntity {
         this.roles = roles;
     }
 
-    @Override
     public long getId() {
         return id;
     }

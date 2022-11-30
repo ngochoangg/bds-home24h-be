@@ -45,7 +45,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 
         if (null != user && null != token && token.getExpireDate().after(new Date())) {
             Set<GrantedAuthority> authorities = new HashSet<>();
-            user.getAuthorities().forEach(role -> authorities.add(new SimpleGrantedAuthority(role.toString())));
+            user.getAuthorities().forEach(role -> authorities.add(new SimpleGrantedAuthority((String) role)));
             UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(user,
                     null, authorities);
             authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));

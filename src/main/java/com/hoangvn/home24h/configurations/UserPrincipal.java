@@ -2,14 +2,13 @@ package com.hoangvn.home24h.configurations;
 
 import java.util.Collection;
 
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 public class UserPrincipal implements UserDetails {
     private long userId;
     private String userName;
     private String password;
-    private Collection<? extends GrantedAuthority> authorities;
+    private Collection authorities;
 
     @Override
     public boolean isAccountNonExpired() {
@@ -17,7 +16,7 @@ public class UserPrincipal implements UserDetails {
     }
 
     @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
+    public Collection getAuthorities() {
         // TODO Auto-generated method stub
         return authorities;
     }
@@ -62,7 +61,7 @@ public class UserPrincipal implements UserDetails {
         this.password = password;
     }
 
-    public void setAuthorities(Collection<? extends GrantedAuthority> authorities) {
+    public void setAuthorities(Collection authorities) {
         this.authorities = authorities;
     }
 

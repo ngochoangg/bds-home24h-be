@@ -1,4 +1,4 @@
-package com.hoangvn.home24h.repository.interfaces;
+package com.hoangvn.home24h.repository.user;
 
 import java.util.Optional;
 

@@ -21,7 +21,7 @@ public class Country {
 
     @OneToMany(mappedBy = "country", cascade = CascadeType.ALL)
     @JsonIgnore
-    private Set<Region> regions;
+    private Set<Province> province;
 
     public long getId() {
         return id;
@@ -47,11 +47,11 @@ public class Country {
         this.countryName = countryName;
     }
 
-    public Set<Region> getRegions() {
-        return regions;
+    public Set<Province> getRegions() {
+        return province;
     }
 
-    public void setRegions(Set<Region> regions) {
-        this.regions = regions;
+    public void setRegions(Set<Province> regions) {
+        this.province = regions;
     }
 }

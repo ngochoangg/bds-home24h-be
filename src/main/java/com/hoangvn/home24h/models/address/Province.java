@@ -7,24 +7,24 @@ import javax.persistence.*;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
-@Table(name = "regions")
-public class Region {
+@Table(name = "provinces")
+public class Province {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
     @Column(name = "code", unique = true, nullable = false)
-    private String regionCode;
+    private String provinceCode;
 
     @Column(name = "name", nullable = false)
-    private String regionName;
+    private String provinceName;
 
     @ManyToOne
     @JoinColumn(name = "country_id")
     @JsonIgnore
     private Country country;
 
-    @OneToMany(mappedBy = "region", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "province", cascade = CascadeType.ALL)
     @JsonIgnore
     private Set<District> districts;
 
@@ -44,20 +44,12 @@ public class Region {
         this.id = id;
     }
 
-    public String getRegionCode() {
-        return regionCode;
+    public String getProvinceCode() {
+        return provinceCode;
     }
 
-    public void setRegionCode(String regionCode) {
-        this.regionCode = regionCode;
-    }
-
-    public String getRegionName() {
-        return regionName;
-    }
-
-    public void setRegionName(String regionName) {
-        this.regionName = regionName;
+    public void setProvinceCode(String provinceCode) {
+        this.provinceCode = provinceCode;
     }
 
     public Country getCountry() {
@@ -66,5 +58,13 @@ public class Region {
 
     public void setCountry(Country country) {
         this.country = country;
+    }
+
+    public String getProvinceName() {
+        return provinceName;
+    }
+
+    public void setProvinceName(String provinceName) {
+        this.provinceName = provinceName;
     }
 }

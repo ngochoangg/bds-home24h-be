@@ -1,4 +1,4 @@
-package com.hoangvn.home24h.repository.interfaces;
+package com.hoangvn.home24h.repository.address;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 

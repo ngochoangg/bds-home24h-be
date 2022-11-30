@@ -6,8 +6,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.annotation.GetMapping;
 
-import com.hoangvn.home24h.repository.interfaces.IAddressRepository;
-import com.hoangvn.home24h.repository.interfaces.ICountryRepository;
+import com.hoangvn.home24h.repository.address.IAddressRepository;
+import com.hoangvn.home24h.repository.address.ICountryRepository;
 
 @RestController
 @CrossOrigin

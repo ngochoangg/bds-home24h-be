@@ -21,9 +21,9 @@ public class District {
     private String name;
 
     @ManyToOne
-    @JoinColumn(name = "region_id")
+    @JoinColumn(name = "province_id")
     @JsonIgnore
-    private Region region;
+    private Province province;
 
     @OneToMany(mappedBy = "district", cascade = CascadeType.ALL)
     @JsonIgnore
@@ -53,12 +53,12 @@ public class District {
         this.name = name;
     }
 
-    public Region getRegion() {
-        return region;
+    public Province getRegion() {
+        return province;
     }
 
-    public void setRegion(Region region) {
-        this.region = region;
+    public void setRegion(Province region) {
+        this.province = region;
     }
 
     public Set<Ward> getWards() {

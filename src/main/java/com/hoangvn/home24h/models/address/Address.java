@@ -18,9 +18,9 @@ public class Address {
     private Country country;
 
     @OneToOne
-    @JoinColumn(name = "region_id")
+    @JoinColumn(name = "province_id")
     @MapsId
-    private Region region;
+    private Province province;
 
     @OneToOne
     @JoinColumn(name = "district_id")
@@ -64,12 +64,12 @@ public class Address {
         this.country = country;
     }
 
-    public Region getRegion() {
-        return region;
+    public Province getRegion() {
+        return province;
     }
 
-    public void setRegion(Region region) {
-        this.region = region;
+    public void setRegion(Province region) {
+        this.province = region;
     }
 
     public District getDistrict() {
