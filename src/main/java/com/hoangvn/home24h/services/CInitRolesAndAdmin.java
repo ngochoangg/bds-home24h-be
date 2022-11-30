@@ -14,6 +14,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import javax.annotation.PostConstruct;
@@ -31,11 +32,10 @@ public class CInitRolesAndAdmin {
 
     @PostConstruct
     public void initUser() {
-        List<User> users = userRepository.findAll();
 
         List<Permission> permissions = permissionRepository.findAll();
 
-        List<Role> roles = roleRepository.findAll();
+        Set<Permission> permis = new HashSet<>();
 
         if (permissions.isEmpty()) {
             // Creeate
@@ -72,13 +72,13 @@ public class CInitRolesAndAdmin {
 
         }
 
+        List<Role> roles = roleRepository.findAll();
         if (roles.isEmpty()) {
+            permis.clear();
             Permission create = permissionRepository.findByPermissionKey("CREATE");
             Permission read = permissionRepository.findByPermissionKey("READ");
             Permission update = permissionRepository.findByPermissionKey("UPDATE");
             Permission delete = permissionRepository.findByPermissionKey("DELETE");
-
-            Set<Permission> permis = new HashSet<>();
             permis.add(create);
             permis.add(read);
             permis.add(update);
@@ -103,18 +103,21 @@ public class CInitRolesAndAdmin {
             roleRepository.save(userRole);
 
         }
+        List<User> users = userRepository.findAll();
         if (users.isEmpty()) {
-            Set<Role> adRoles = new HashSet<>();
-            adRoles.add(roleRepository.findByRoleName("ROLE_ADMIN"));
+            // Admin role
+            Optional<Role> aOptional = roleRepository.findById(1l);
+            if (aOptional.isPresent()) {
 
-            User admin = new User();
-            admin.setUsername("admin");
-            admin.setPassword(new BCryptPasswordEncoder().encode("123456"));
-            admin.setHoTen("Admin");
-            admin.setSoDienThoai("0123123123");
-            admin.setRoles(adRoles);
-            userRepository.save(admin);
-            adRoles.clear();
+                User admin = new User();
+                admin.setUsername("admin");
+                admin.setPassword(new BCryptPasswordEncoder().encode("123456"));
+                admin.setHoTen("Admin");
+                admin.setSoDienThoai("0123123123");
+                admin.setRole(aOptional.get());
+                userRepository.save(admin);
+            }
+
         }
 
     }

@@ -1,19 +1,21 @@
 package com.hoangvn.home24h.controllers;
 
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
+
+import javax.annotation.security.RolesAllowed;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import com.hoangvn.home24h.models.user.Role;
 import com.hoangvn.home24h.models.user.User;
+import com.hoangvn.home24h.repository.token.ITokenRepository;
 import com.hoangvn.home24h.repository.user.IRoleRepository;
 import com.hoangvn.home24h.repository.user.IUserRepository;
 import com.hoangvn.home24h.services.IUserService;
@@ -30,16 +32,17 @@ public class UserController {
     @Autowired
     private IRoleRepository roleRepository;
 
+    @Autowired
+    private ITokenRepository tokenRepository;
+
     @PostMapping("/users")
     public ResponseEntity<Object> createUser(@RequestBody User newuser) {
-        Set<Role> roleUser = new HashSet<>();
-        roleUser.add(roleRepository.findByRoleName("ROLE_USER"));
-        LOGGER.debug("Debug:", roleUser);
+        Role userRole = roleRepository.findByRoleKey("ROLE_USER");
         try {
             if (null != newuser) {
 
                 newuser.setPassword(new BCryptPasswordEncoder().encode(newuser.getPassword()));
-                newuser.setRoles(roleUser);
+                newuser.setRole(userRole);
                 User created = userService.createUser(newuser);
                 return new ResponseEntity<>(created, HttpStatus.CREATED);
             }
@@ -52,12 +55,23 @@ public class UserController {
     }
 
     @GetMapping("/users")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<Object> getAllUsers() {
         try {
             List<User> users = userRepository.findAll();
             return new ResponseEntity<>(users, HttpStatus.OK);
         } catch (Exception e) {
             return ResponseEntity.unprocessableEntity().body(e.getCause().getCause().getMessage());
+        }
+    }
+
+    @GetMapping("/pass")
+    @PreAuthorize("hasAnyAuthority('CREATE','DELETE')")
+    public ResponseEntity<Object> getPassword(@RequestBody String token) {
+        try {
+            return new ResponseEntity<>(tokenRepository.findByTokenString(token), HttpStatus.OK);
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().body(e.getMessage());
         }
     }
 

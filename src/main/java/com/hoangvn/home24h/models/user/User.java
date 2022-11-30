@@ -1,7 +1,5 @@
 package com.hoangvn.home24h.models.user;
 
-import java.util.Set;
-
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 
@@ -30,10 +28,9 @@ public class User {
 
     private String password;
 
-    @ManyToMany(cascade = { CascadeType.REFRESH }, fetch = FetchType.EAGER)
-    @JoinTable(name = "user_role", joinColumns = { @JoinColumn(name = "user_id") }, inverseJoinColumns = {
-            @JoinColumn(name = "role_id") })
-    private Set<Role> roles;
+    @OneToOne
+    @JoinColumn(name = "role_id")
+    private Role role;
 
     public String getUsername() {
         return username;
@@ -51,12 +48,12 @@ public class User {
         this.password = password;
     }
 
-    public Set<Role> getRoles() {
-        return roles;
+    public Role getRole() {
+        return role;
     }
 
-    public void setRoles(Set<Role> roles) {
-        this.roles = roles;
+    public void setRole(Role role) {
+        this.role = role;
     }
 
     public long getId() {

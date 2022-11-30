@@ -15,8 +15,11 @@ import com.nimbusds.jose.JWSVerifier;
 import com.nimbusds.jose.crypto.MACSigner;
 import com.nimbusds.jose.crypto.MACVerifier;
 import com.nimbusds.jose.shaded.gson.Gson;
+import com.nimbusds.jose.shaded.gson.JsonObject;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
+
+import net.minidev.json.JSONObject;
 
 @Component
 public class JwtUtil {
@@ -78,12 +81,13 @@ public class JwtUtil {
         try {
             JWTClaimsSet claimsSet = this.getClaimsFromToken(token);
             if (claimsSet != null && isTokenExpired(claimsSet)) {
-                Gson gson = new Gson();
-                String json = gson.toJson(claimsSet.getClaim(USER));
-                user = new ObjectMapper().readValue(json, UserPrincipal.class);
+                var jsonObject = claimsSet.getClaim(USER);
+                ObjectMapper mapper = new ObjectMapper();
+                user = mapper.convertValue(jsonObject, UserPrincipal.class);
             }
         } catch (Exception e) {
             logger.error(e.getMessage());
+            System.out.println(e.getMessage());
         }
         return user;
     }

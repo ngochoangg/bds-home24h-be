@@ -16,6 +16,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
+import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -23,6 +24,7 @@ import com.hoangvn.home24h.configurations.UserPrincipal;
 import com.hoangvn.home24h.models.token.Token;
 import com.hoangvn.home24h.services.ITokenService;
 
+@Component
 public class JwtRequestFilter extends OncePerRequestFilter {
     @Autowired
     private JwtUtil jwtUtil;
@@ -45,7 +47,8 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 
         if (null != user && null != token && token.getExpireDate().after(new Date())) {
             Set<GrantedAuthority> authorities = new HashSet<>();
-            user.getAuthorities().forEach(role -> authorities.add(new SimpleGrantedAuthority((String) role)));
+            user.getAuthorities()
+                    .forEach(permission -> authorities.add(new SimpleGrantedAuthority((String) permission)));
             UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(user,
                     null, authorities);
             authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
