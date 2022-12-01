@@ -2,8 +2,6 @@ package com.hoangvn.home24h.controllers;
 
 import java.util.List;
 
-import javax.annotation.security.RolesAllowed;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,8 +52,8 @@ public class UserController {
         }
     }
 
-    @GetMapping("/users")
-    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    @GetMapping("/user")
+    @PreAuthorize("hasRole('ROLE_ADMIN','ROLE_USER','ADMIN')")
     public ResponseEntity<Object> getAllUsers() {
         try {
             List<User> users = userRepository.findAll();

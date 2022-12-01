@@ -7,7 +7,7 @@ import javax.persistence.*;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
-@Table(name = "districts")
+@Table(name = "district")
 public class District {
 
     @Id
@@ -35,6 +35,14 @@ public class District {
 
     public void setId(long id) {
         this.id = id;
+    }
+
+    public Province getProvince() {
+        return province;
+    }
+
+    public void setProvince(Province province) {
+        this.province = province;
     }
 
     public String getPrefix() {

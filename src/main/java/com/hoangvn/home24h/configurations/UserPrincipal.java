@@ -6,7 +6,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 public class UserPrincipal implements UserDetails {
     private long userId;
-    private String userName;
+    private String username;
     private String password;
     private Collection authorities;
 
@@ -54,7 +54,7 @@ public class UserPrincipal implements UserDetails {
     }
 
     public void setUserName(String userName) {
-        this.userName = userName;
+        this.username = userName;
     }
 
     public void setPassword(String password) {
@@ -68,6 +68,6 @@ public class UserPrincipal implements UserDetails {
     @Override
     public String getUsername() {
         // TODO Auto-generated method stub
-        return userName;
+        return username;
     }
 }

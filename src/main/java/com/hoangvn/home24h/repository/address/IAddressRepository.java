@@ -5,7 +5,7 @@ import org.springframework.stereotype.Repository;
 
 import com.hoangvn.home24h.models.address.Address;
 
-@Repository
-public interface IAddressRepository extends JpaRepository<Address, Long> {
+// @Repository
+public interface IAddressRepository /* extends JpaRepository<Address, Long> */ {
 
 }

@@ -6,8 +6,9 @@ import javax.persistence.*;
 
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
-
-import com.hoangvn.home24h.models.address.Address;
+import com.hoangvn.home24h.models.address.District;
+import com.hoangvn.home24h.models.address.Province;
+import com.hoangvn.home24h.models.address.Ward;
 
 @Entity
 @Table(name = "posts")
@@ -22,10 +23,20 @@ public class BaiDang {
     @Column(name = "hinh_thuc") // ban, cho thue
     private String hinhThuc;
 
-    @JoinColumn(name = "vi_tri")
+    @JoinColumn(name = "tinh_thanh")
+    @OneToOne(targetEntity = Province.class)
+    private Province tinhThanh;
+
+    @JoinColumn(name = "quan_huyen")
     @OneToOne
-    @MapsId
-    private Address viTri;
+    private District quanHuyen;
+
+    @JoinColumn(name = "phuong_xa")
+    @OneToOne
+    private Ward phuongXa;
+
+    @Column(name = "so_nha")
+    private String soNha;
 
     @Column(name = "dien_tich")
     private Double dienTich;
@@ -41,6 +52,9 @@ public class BaiDang {
 
     @Column(name = "da_ban_chua")
     private boolean daBan;
+
+    @Column(name = "link_hinh_anh")
+    private String linkAnh;
 
     @Column(name = "gia_tien")
     private double giaTien;
@@ -79,14 +93,6 @@ public class BaiDang {
         this.hinhThuc = hinhThuc;
     }
 
-    public Address getViTri() {
-        return viTri;
-    }
-
-    public void setViTri(Address viTri) {
-        this.viTri = viTri;
-    }
-
     public Double getDienTich() {
         return dienTich;
     }
@@ -97,6 +103,34 @@ public class BaiDang {
 
     public int getSoPhong() {
         return soPhong;
+    }
+
+    public void setTinhThanh(Province tinhThanh) {
+        this.tinhThanh = tinhThanh;
+    }
+
+    public District getQuanHuyen() {
+        return quanHuyen;
+    }
+
+    public void setQuanHuyen(District quanHuyen) {
+        this.quanHuyen = quanHuyen;
+    }
+
+    public Ward getPhuongXa() {
+        return phuongXa;
+    }
+
+    public void setPhuongXa(Ward phuongXa) {
+        this.phuongXa = phuongXa;
+    }
+
+    public String getSoNha() {
+        return soNha;
+    }
+
+    public void setSoNha(String soNha) {
+        this.soNha = soNha;
     }
 
     public void setSoPhong(int soPhong) {
@@ -149,6 +183,18 @@ public class BaiDang {
 
     public void setGiaTien(double giaTien) {
         this.giaTien = giaTien;
+    }
+
+    public Province getTinhThanh() {
+        return tinhThanh;
+    }
+
+    public String getLinkAnh() {
+        return linkAnh;
+    }
+
+    public void setLinkAnh(String linkAnh) {
+        this.linkAnh = linkAnh;
     }
 
 }

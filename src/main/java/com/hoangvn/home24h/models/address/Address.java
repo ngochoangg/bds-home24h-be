@@ -5,39 +5,34 @@ import javax.persistence.*;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.hoangvn.home24h.models.user.User;
 
-@Entity
-@Table(name = "address")
+// @Entity
+// @Table(name = "address")
 public class Address {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    // @Id
+    // @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @OneToOne
-    @JoinColumn(name = "country_id")
-    @MapsId
-    private Country country;
-
-    @OneToOne
-    @JoinColumn(name = "province_id")
-    @MapsId
+    // @OneToOne
+    // @JoinColumn(name = "province_id")
+    // @MapsId
     private Province province;
 
-    @OneToOne
-    @JoinColumn(name = "district_id")
-    @MapsId
+    // @OneToOne
+    // @JoinColumn(name = "district_id")
+    // @MapsId
     private District district;
 
-    @OneToOne
-    @JoinColumn(name = "ward_id")
-    @MapsId
+    // @OneToOne
+    // @JoinColumn(name = "ward_id")
+    // @MapsId
     private Ward ward;
 
-    @JoinColumn(name = "user_id")
-    @ManyToOne(optional = false)
-    @JsonIgnore
+    // @JoinColumn(name = "user_id")
+    // @ManyToOne(optional = false)
+    // @JsonIgnore
     private User user;
 
-    @Column(name = "so_nha")
+    // @Column(name = "so_nha")
     private String soNha;
 
     public String getSoNha() {
@@ -54,14 +49,6 @@ public class Address {
 
     public void setId(long id) {
         this.id = id;
-    }
-
-    public Country getCountry() {
-        return country;
-    }
-
-    public void setCountry(Country country) {
-        this.country = country;
     }
 
     public Province getRegion() {
@@ -94,5 +81,13 @@ public class Address {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public Province getProvince() {
+        return province;
+    }
+
+    public void setProvince(Province province) {
+        this.province = province;
     }
 }
