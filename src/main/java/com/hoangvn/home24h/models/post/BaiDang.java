@@ -3,6 +3,7 @@ package com.hoangvn.home24h.models.post;
 import java.util.Date;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotEmpty;
 
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -28,17 +29,14 @@ public class BaiDang {
     private Province tinhThanh;
 
     @JoinColumn(name = "quan_huyen")
-    @OneToOne
+    @OneToOne(targetEntity = District.class)
     private District quanHuyen;
-
-    @JoinColumn(name = "phuong_xa")
-    @OneToOne
-    private Ward phuongXa;
 
     @Column(name = "so_nha")
     private String soNha;
 
     @Column(name = "dien_tich")
+    @NotEmpty(message = "Diện tích bắt buộc")
     private Double dienTich;
 
     @Column(name = "so_phong")
@@ -115,14 +113,6 @@ public class BaiDang {
 
     public void setQuanHuyen(District quanHuyen) {
         this.quanHuyen = quanHuyen;
-    }
-
-    public Ward getPhuongXa() {
-        return phuongXa;
-    }
-
-    public void setPhuongXa(Ward phuongXa) {
-        this.phuongXa = phuongXa;
     }
 
     public String getSoNha() {

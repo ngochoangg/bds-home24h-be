@@ -46,12 +46,4 @@ public class BaiDangController {
         }
     }
 
-    @GetMapping(path = "/district")
-    public ResponseEntity<Object> getDistrict() {
-        try {
-            return new ResponseEntity<>(districtRepository.findAll(), HttpStatus.OK);
-        } catch (Exception e) {
-            return ResponseEntity.unprocessableEntity().body(e.getMessage());
-        }
-    }
 }

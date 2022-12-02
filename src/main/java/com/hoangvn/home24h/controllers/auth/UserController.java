@@ -1,4 +1,4 @@
-package com.hoangvn.home24h.controllers;
+package com.hoangvn.home24h.controllers.auth;
 
 import java.util.List;
 

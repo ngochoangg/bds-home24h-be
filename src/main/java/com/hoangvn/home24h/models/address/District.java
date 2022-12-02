@@ -61,14 +61,6 @@ public class District {
         this.name = name;
     }
 
-    public Province getRegion() {
-        return province;
-    }
-
-    public void setRegion(Province region) {
-        this.province = region;
-    }
-
     public Set<Ward> getWards() {
         return wards;
     }
