@@ -11,6 +11,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import com.hoangvn.home24h.models.token.Token;
 import com.hoangvn.home24h.models.user.Role;
 import com.hoangvn.home24h.models.user.User;
 import com.hoangvn.home24h.repository.token.ITokenRepository;
@@ -53,7 +54,7 @@ public class UserController {
     }
 
     @GetMapping("/user")
-    @PreAuthorize("hasRole('ROLE_ADMIN','ROLE_USER','ADMIN')")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<Object> getAllUsers() {
         try {
             List<User> users = userRepository.findAll();
@@ -70,6 +71,17 @@ public class UserController {
             return new ResponseEntity<>(tokenRepository.findByTokenString(token), HttpStatus.OK);
         } catch (Exception e) {
             return ResponseEntity.internalServerError().body(e.getMessage());
+        }
+    }
+
+    @GetMapping("/role")
+    public ResponseEntity<Object> getRole(@RequestBody String tk) {
+        try {
+            Token token = tokenRepository.findByTokenString(tk);
+            System.out.println(token.toString());
+            return new ResponseEntity<>(roleRepository.findByRoleKey("ROLE_ADMIN"), HttpStatus.OK);
+        } catch (Exception e) {
+            return ResponseEntity.unprocessableEntity().body(e.getMessage());
         }
     }
 

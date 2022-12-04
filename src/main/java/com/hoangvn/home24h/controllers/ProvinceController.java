@@ -27,11 +27,12 @@ public class ProvinceController {
     IDistrictRepository districtRepository;
 
     @GetMapping(value = "/province")
-    public ResponseEntity<Object> getAll(@RequestParam(required = false, defaultValue = "0") String p) {
+    public ResponseEntity<Object> getAll(@RequestParam(required = false, defaultValue = "0") String p,
+            @RequestParam(required = false, defaultValue = "10") String s) {
         try {
-            Pageable pageOfTen = PageRequest.of(Integer.parseInt(p), 10);
+            Pageable pageOfParamS = PageRequest.of(Integer.parseInt(p), Integer.parseInt(s));
             List<Province> list = new ArrayList<>();
-            provinceRepository.findAll(pageOfTen).forEach(list::add);
+            provinceRepository.findAll(pageOfParamS).forEach(list::add);
             return new ResponseEntity<>(list, HttpStatus.OK);
 
         } catch (Exception e) {

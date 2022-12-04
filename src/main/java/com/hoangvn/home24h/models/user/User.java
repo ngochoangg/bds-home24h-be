@@ -1,6 +1,7 @@
 package com.hoangvn.home24h.models.user;
 
 import javax.persistence.*;
+import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 
 @Entity
@@ -18,6 +19,7 @@ public class User {
     private String soDienThoai;
 
     @Column(name = "email", unique = true)
+    @Email(message = "Email chưa đúng hoặc đã tồn tại")
     private String email;
 
     @Column(name = "dia_chi")

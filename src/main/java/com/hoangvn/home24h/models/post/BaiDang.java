@@ -9,7 +9,6 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import com.hoangvn.home24h.models.address.District;
 import com.hoangvn.home24h.models.address.Province;
-import com.hoangvn.home24h.models.address.Ward;
 
 @Entity
 @Table(name = "posts")
@@ -22,6 +21,7 @@ public class BaiDang {
     private String loaiNhaDat; // Nhà đất, đất, chung cư
 
     @Column(name = "hinh_thuc") // ban, cho thue
+    @NotEmpty(message = "Bài đăng cần bán hay cho thuê?")
     private String hinhThuc;
 
     @JoinColumn(name = "tinh_thanh")
@@ -36,7 +36,6 @@ public class BaiDang {
     private String soNha;
 
     @Column(name = "dien_tich")
-    @NotEmpty(message = "Diện tích bắt buộc")
     private Double dienTich;
 
     @Column(name = "so_phong")
@@ -51,11 +50,14 @@ public class BaiDang {
     @Column(name = "da_ban_chua")
     private boolean daBan;
 
-    @Column(name = "link_hinh_anh")
+    @Column(name = "link_hinh_anh", columnDefinition = "varchar(255) default 'https://images.pexels.com/photos/2640604/pexels-photo-2640604.jpeg'")
     private String linkAnh;
 
     @Column(name = "gia_tien")
     private double giaTien;
+
+    @Column(name = "ghi_chu")
+    private String ghiChu;
 
     @Temporal(TemporalType.TIMESTAMP)
     @CreatedDate
@@ -185,6 +187,14 @@ public class BaiDang {
 
     public void setLinkAnh(String linkAnh) {
         this.linkAnh = linkAnh;
+    }
+
+    public String getGhiChu() {
+        return ghiChu;
+    }
+
+    public void setGhiChu(String ghiChu) {
+        this.ghiChu = ghiChu;
     }
 
 }
