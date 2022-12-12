@@ -1,8 +1,13 @@
 package com.hoangvn.home24h.models.user;
 
+import java.util.List;
+
 import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.hoangvn.home24h.models.post.BaiDang;
 
 @Entity
 @Table(name = "users")
@@ -32,7 +37,12 @@ public class User {
 
     @OneToOne
     @JoinColumn(name = "role_id")
+    @JsonIgnore
     private Role role;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    @JsonIgnore
+    private List<BaiDang> cacBaiDang;
 
     public String getUsername() {
         return username;
@@ -96,6 +106,18 @@ public class User {
 
     public void setDiaChi(String diaChi) {
         this.diaChi = diaChi;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public List<BaiDang> getCacBaiDang() {
+        return cacBaiDang;
+    }
+
+    public void setCacBaiDang(List<BaiDang> cacBaiDang) {
+        this.cacBaiDang = cacBaiDang;
     }
 
 }

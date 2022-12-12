@@ -4,12 +4,14 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import com.hoangvn.home24h.models.post.BaiDang;
@@ -17,6 +19,7 @@ import com.hoangvn.home24h.repository.IBaiDangRepository;
 import com.hoangvn.home24h.repository.address.IDistrictRepository;
 import com.hoangvn.home24h.repository.address.IProvinceRepository;
 import com.hoangvn.home24h.repository.address.IWardRepository;
+import com.hoangvn.home24h.repository.user.IUserRepository;
 import com.hoangvn.home24h.services.PostService;
 
 @RestController
@@ -33,6 +36,9 @@ public class BaiDangController {
     @Autowired
     PostService postService;
 
+    @Autowired
+    IUserRepository userRepository;
+
     @GetMapping(path = "/posts")
     public ResponseEntity<Object> danhSachBaiDang(@RequestParam(defaultValue = "0", required = false) String p,
             @RequestParam(defaultValue = "10", required = false) String s) {
@@ -47,6 +53,7 @@ public class BaiDangController {
     }
 
     @PostMapping(path = "/post")
+    @PreAuthorize("hasAuthority('CREATE')")
     public ResponseEntity<Object> createPost(@RequestBody Map<String, Object> baiMoi) {
         try {
             BaiDang saved = postService.convertToBaiDang(baiMoi);
@@ -61,6 +68,21 @@ public class BaiDangController {
     public ResponseEntity<Object> getLastestPost(@RequestParam(required = false, defaultValue = "6") String post) {
         try {
             return new ResponseEntity<>(baiDangRepository.findByNgayTao(Long.parseLong(post)), HttpStatus.OK);
+        } catch (Exception e) {
+            return ResponseEntity.unprocessableEntity().body(e.getMessage());
+        }
+    }
+
+    @GetMapping(path = "/post/{id}")
+    @PreAuthorize("hasAuthority('UPDATE')")
+    public ResponseEntity<Object> getPostById(@PathVariable Long id) {
+
+        try {
+            Optional<BaiDang> optional = baiDangRepository.findById(id);
+            if (optional.isPresent()) {
+                return new ResponseEntity<>(optional.get(), HttpStatus.OK);
+            }
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         } catch (Exception e) {
             return ResponseEntity.unprocessableEntity().body(e.getMessage());
         }

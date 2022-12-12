@@ -4,11 +4,15 @@ import java.util.Date;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.hoangvn.home24h.models.address.District;
 import com.hoangvn.home24h.models.address.Province;
+import com.hoangvn.home24h.models.user.User;
 
 @Entity
 @Table(name = "posts")
@@ -50,7 +54,8 @@ public class BaiDang {
     @Column(name = "da_ban_chua")
     private boolean daBan;
 
-    @Column(name = "link_hinh_anh", columnDefinition = "varchar(255) default 'https://images.pexels.com/photos/2640604/pexels-photo-2640604.jpeg'")
+    @Column(name = "link_hinh_anh")
+    @NotNull
     private String linkAnh;
 
     @Column(name = "gia_tien")
@@ -58,6 +63,11 @@ public class BaiDang {
 
     @Column(name = "ghi_chu")
     private String ghiChu;
+
+    @JoinColumn(name = "user_id")
+    @ManyToOne
+    @JsonIgnoreProperties({ "role", "hoTen", "password", "diaChi", "soDienThoai", "email" })
+    private User user;
 
     @Temporal(TemporalType.TIMESTAMP)
     @CreatedDate
@@ -195,6 +205,14 @@ public class BaiDang {
 
     public void setGhiChu(String ghiChu) {
         this.ghiChu = ghiChu;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 
 }

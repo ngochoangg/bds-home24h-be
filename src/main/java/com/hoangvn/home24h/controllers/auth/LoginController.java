@@ -42,7 +42,7 @@ public class LoginController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Username or password not match! ");
 
         } catch (Exception e) {
-            return ResponseEntity.internalServerError().body(e.getMessage());
+            return ResponseEntity.unprocessableEntity().body(e.getMessage());
         }
 
     }
@@ -58,7 +58,7 @@ public class LoginController {
             }
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Username or password not match! ");
         } catch (Exception e) {
-            return ResponseEntity.internalServerError().body(e.getMessage());
+            return ResponseEntity.unprocessableEntity().body(e.getMessage());
         }
     }
 
@@ -68,8 +68,7 @@ public class LoginController {
      * @return true / false
      */
     private boolean comparePassword(String rawPassword, String encodedPassword) {
-        final boolean result = new BCryptPasswordEncoder().matches(rawPassword, encodedPassword);
-        return result;
+        return new BCryptPasswordEncoder().matches(rawPassword, encodedPassword);
     }
 
     private String generateToken(UserPrincipal userPrincipal) {

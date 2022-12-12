@@ -14,6 +14,9 @@ import com.hoangvn.home24h.models.post.BaiDang;
 public interface IBaiDangRepository extends JpaRepository<BaiDang, Long> {
     public Optional<BaiDang> findByLoaiNhaDat(String loaiNhaDat);
 
-    @Query(value = "SELECT * FROM posts ORDER BY ngay_tao DESC LIMIT :soBai", nativeQuery = true)
+    @Query(value = "SELECT * FROM posts WHERE da_ban_chua = false ORDER BY ngay_tao DESC LIMIT :soBai", nativeQuery = true)
     List<BaiDang> findByNgayTao(@Param("soBai") Long soBai);
+
+    @Query(value = "SELECT * FROM posts WHERE user_id = :userId", nativeQuery = true)
+    List<BaiDang> findByUserId(@Param("userId") Long userId);
 }
