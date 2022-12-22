@@ -61,6 +61,7 @@ public class BaiDangController {
     // Read
 
     @GetMapping(path = "/posts")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<Object> danhSachBaiDang(@RequestParam(defaultValue = "0", required = false) String p,
             @RequestParam(defaultValue = "10", required = false) String s) {
         try {
@@ -90,7 +91,7 @@ public class BaiDangController {
         try {
             Pageable pageWithTen = PageRequest.of(Integer.parseInt(p), Integer.parseInt(s));
 
-            return new ResponseEntity<>(baiDangRepository.baiDangAdmin(pageWithTen), HttpStatus.OK);
+            return new ResponseEntity<>(baiDangRepository.baiDangAdmin(pageWithTen).getContent(), HttpStatus.OK);
         } catch (Exception e) {
             return ResponseEntity.unprocessableEntity().body(e.getMessage());
         }
