@@ -139,7 +139,7 @@ public class BaiDangController {
     }
 
     // Get post with id
-    @GetMapping(params = "/post/{id}")
+    @GetMapping(path = "/post/{id}")
     @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_MANAGER')")
     public ResponseEntity<Object> getPostById(@PathVariable Long id) {
         try {
