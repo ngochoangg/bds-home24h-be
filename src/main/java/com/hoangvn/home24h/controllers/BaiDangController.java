@@ -138,6 +138,21 @@ public class BaiDangController {
         }
     }
 
+    // Get post with id
+    @GetMapping(params = "/post/{id}")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_MANAGER')")
+    public ResponseEntity<Object> getPostById(@PathVariable Long id) {
+        try {
+            Optional<BaiDang> optional = baiDangRepository.findById(id);
+            if (optional.isPresent()) {
+                return new ResponseEntity<>(optional.get(), HttpStatus.OK);
+            }
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } catch (Exception e) {
+            return ResponseEntity.unprocessableEntity().body(e.getMessage());
+        }
+    }
+
     // Update
 
     // Người dùng chỉ được sửa bài đăng của chính họ
@@ -145,9 +160,36 @@ public class BaiDangController {
     // quyền `ROLE_ADMIN` là có thể.
     @PutMapping(path = "/{username}/post/{id}")
     @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_MANAGER') or (#username == authentication.name and #mPost['status'] == null)")
-    public ResponseEntity<Object> updatePostById(@PathVariable Long id,
+    public ResponseEntity<Object> updateUserPostById(@PathVariable Long id,
             @RequestBody Map<String, Object> mPost,
             @PathVariable String username) {
+        try {
+            AtomicReference<BaiDang> reference = new AtomicReference<>(null);
+            Optional<User> userOptional = userRepository.findByUsername(username);
+            if (userOptional.isPresent()) {
+                userOptional.get().getCacBaiDang().forEach(p -> {
+                    if (p.getId() == id) {
+                        reference.set(p);
+                    }
+                });
+            }
+            if (null == reference.get() || baiDangRepository.findById(id).isEmpty()) {
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            }
+            BaiDang update = postService.updateBaiDang(mPost, reference.get());
+            update.setNgayCapNhat(new Date());
+
+            return new ResponseEntity<>(baiDangRepository.save(update), HttpStatus.OK);
+        } catch (Exception e) {
+            return ResponseEntity.unprocessableEntity().body(e.getMessage());
+        }
+    }
+
+    // Update with id
+    @PutMapping(path = "/post/{id}")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_MANAGER')")
+    public ResponseEntity<Object> updatePostById(@PathVariable Long id,
+            @RequestBody Map<String, Object> mPost) {
         try {
             Optional<BaiDang> optional = baiDangRepository.findById(id);
             if (optional.isEmpty()) {
