@@ -78,9 +78,4 @@ public class ProvinceController {
         }
     }
 
-    @GetMapping("/address")
-    public ResponseEntity<Object> getAllAddress() {
-        return new ResponseEntity<>(provinceRepository.findAll(), HttpStatus.OK);
-    }
-
 }

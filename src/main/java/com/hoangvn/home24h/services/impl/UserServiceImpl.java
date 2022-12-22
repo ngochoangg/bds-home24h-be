@@ -30,7 +30,10 @@ public class UserServiceImpl implements IUserService {
         if (optional.isPresent()) {
             Set<String> authorities = new HashSet<>();
             User thisUser = optional.get();
-            thisUser.getRole().getPermission().forEach(p -> authorities.add(p.getPermissionKey()));
+            thisUser.getRole().forEach(r -> {
+                authorities.add(r.getRoleKey());
+                r.getPermission().forEach(p -> authorities.add(p.getPermissionKey()));
+            });
 
             userPrincipal.setUserId(thisUser.getId());
             userPrincipal.setUserName(thisUser.getUsername());

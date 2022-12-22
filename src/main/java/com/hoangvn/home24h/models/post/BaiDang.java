@@ -54,6 +54,9 @@ public class BaiDang {
     @Column(name = "da_ban_chua")
     private boolean daBan;
 
+    @Column(name = "trang_thai")
+    private String status;
+
     @Column(name = "link_hinh_anh")
     @NotNull
     private String linkAnh;
@@ -213,6 +216,14 @@ public class BaiDang {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 
 }

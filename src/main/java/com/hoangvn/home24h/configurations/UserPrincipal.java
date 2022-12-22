@@ -17,31 +17,26 @@ public class UserPrincipal implements UserDetails {
 
     @Override
     public Collection getAuthorities() {
-        // TODO Auto-generated method stub
         return authorities;
     }
 
     @Override
     public String getPassword() {
-        // TODO Auto-generated method stub
         return password;
     }
 
     @Override
     public boolean isAccountNonLocked() {
-        // TODO Auto-generated method stub
         return false;
     }
 
     @Override
     public boolean isCredentialsNonExpired() {
-        // TODO Auto-generated method stub
         return false;
     }
 
     @Override
     public boolean isEnabled() {
-        // TODO Auto-generated method stub
         return false;
     }
 
@@ -67,7 +62,6 @@ public class UserPrincipal implements UserDetails {
 
     @Override
     public String getUsername() {
-        // TODO Auto-generated method stub
         return username;
     }
 }

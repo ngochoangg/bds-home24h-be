@@ -1,6 +1,8 @@
 package com.hoangvn.home24h.models.user;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
@@ -35,10 +37,11 @@ public class User {
 
     private String password;
 
-    @OneToOne
-    @JoinColumn(name = "role_id")
+    @ManyToMany(cascade = CascadeType.REFRESH)
+    @JoinTable(name = "user_role", joinColumns = { @JoinColumn(name = "user_id") }, inverseJoinColumns = {
+            @JoinColumn(name = "role_id") })
     @JsonIgnore
-    private Role role;
+    private Set<Role> role = new HashSet<>();
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     @JsonIgnore
@@ -58,14 +61,6 @@ public class User {
 
     public void setPassword(String password) {
         this.password = password;
-    }
-
-    public Role getRole() {
-        return role;
-    }
-
-    public void setRole(Role role) {
-        this.role = role;
     }
 
     public long getId() {
@@ -118,6 +113,14 @@ public class User {
 
     public void setCacBaiDang(List<BaiDang> cacBaiDang) {
         this.cacBaiDang = cacBaiDang;
+    }
+
+    public Set<Role> getRole() {
+        return role;
+    }
+
+    public void setRole(Set<Role> role) {
+        this.role = role;
     }
 
 }

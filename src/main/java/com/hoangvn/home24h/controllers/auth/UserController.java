@@ -1,14 +1,15 @@
 package com.hoangvn.home24h.controllers.auth;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -16,7 +17,6 @@ import org.springframework.web.bind.annotation.*;
 
 import com.hoangvn.home24h.configurations.UserPrincipal;
 import com.hoangvn.home24h.configurations.sercurity.JwtUtil;
-import com.hoangvn.home24h.models.token.Token;
 import com.hoangvn.home24h.models.user.Role;
 import com.hoangvn.home24h.models.user.User;
 import com.hoangvn.home24h.repository.token.ITokenRepository;
@@ -43,13 +43,15 @@ public class UserController {
     @Autowired
     JwtUtil jwtUtil;
 
+    // CREATE
     @PostMapping(path = "/register")
     public ResponseEntity<Object> createUser(@RequestBody Map<String, Object> newuser) {
-        Role userRole = roleRepository.findByRoleKey("ROLE_USER");
+        Set<Role> roleUser = new HashSet<>();
+        roleUser.add(roleRepository.findByRoleKey("ROLE_USER"));
         try {
             User newUser = createUpdateUserService.createFromMap(newuser);
             newUser.setPassword(new BCryptPasswordEncoder().encode(newUser.getPassword()));
-            newUser.setRole(userRole);
+            newUser.setRole(roleUser);
             return new ResponseEntity<>(userRepository.save(newUser), HttpStatus.CREATED);
 
         } catch (Exception e) {
@@ -58,8 +60,27 @@ public class UserController {
         }
     }
 
+    // Kiểm tra 2 bước, khi trả về token cho endpoint
+    // lưu token tại client, khi truy cập vào admin thì
+    // kiểm tra xem token có trả về đúng người dùng không.
+    @PostMapping(path = "/who")
+    public ResponseEntity<Object> getUsernameByToken(@RequestBody(required = true) String token) {
+
+        try {
+            UserPrincipal user = jwtUtil.getUserFromToken(token);
+            if (null != user.getUsername()) {
+                return new ResponseEntity<>(user.getUsername(), HttpStatus.OK);
+            }
+            return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
+        } catch (Exception e) {
+            return ResponseEntity.unprocessableEntity().body(e.getMessage());
+        }
+    }
+
+    // READ ( only ADMIN)
+
     @GetMapping("/user")
-    @PreAuthorize("hasAuthority('DELETE')")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<Object> getAllUsers(@RequestParam(required = false) String l) {
         try {
             List<User> users = userRepository.findAll();
@@ -73,7 +94,7 @@ public class UserController {
     }
 
     @GetMapping("/pass")
-    @PreAuthorize("hasAnyAuthority('CREATE','DELETE')")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<Object> getPassword(@RequestBody String token) {
         try {
             return new ResponseEntity<>(tokenRepository.findByTokenString(token), HttpStatus.OK);
@@ -82,30 +103,24 @@ public class UserController {
         }
     }
 
-    @GetMapping("/role")
-    public ResponseEntity<Object> getRole(@RequestBody String tk) {
+    @GetMapping("/roles")
+    @PreAuthorize("hasAuthority('CREATE')")
+    public ResponseEntity<Object> getRole(@RequestBody(required = false) String username) {
         try {
-            Token token = tokenRepository.findByTokenString(tk);
-            System.out.println(token.toString());
-            return new ResponseEntity<>(roleRepository.findByRoleKey("ROLE_ADMIN"), HttpStatus.OK);
+            Optional<User> optional = userRepository.findByUsername(username);
+            if (optional.isPresent()) {
+                return new ResponseEntity<>(optional.get().getRole(), HttpStatus.OK);
+            }
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         } catch (Exception e) {
             return ResponseEntity.unprocessableEntity().body(e.getMessage());
         }
     }
 
-    @PostMapping(path = "/user", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE) // More secure
-    public ResponseEntity<Object> createNewUserForm(@RequestParam Map<String, Object> userFormMap) {
-
-        return new ResponseEntity<>(userFormMap, HttpStatus.ACCEPTED);
-    }
-
-    @PostMapping(path = "/user") // Not secure
-    public ResponseEntity<Object> createNewUserBody(@RequestBody Map<String, Object> userJsonMap) {
-
-        return new ResponseEntity<>(userJsonMap, HttpStatus.ACCEPTED);
-    }
-
-    @GetMapping(path = "/user/{username}/posts")
+    // Lấy danh sách bài đăng của người dùng, người dùng
+    // này không thể lấy của người kia ngoại trừ admin.
+    @GetMapping(path = "/{username}/posts")
+    @PreAuthorize("hasRole('ROLE_ADMIN') or #username == authentication.name")
     public ResponseEntity<Object> getAllPostsByUserName(@PathVariable String username) {
         try {
             Optional<User> optional = userRepository.findByUsername(username);
@@ -118,15 +133,33 @@ public class UserController {
         }
     }
 
-    @PostMapping(path = "/who")
-    public ResponseEntity<Object> getUsernameByToken(@RequestBody(required = true) String token) {
-
+    // UPDATE
+    @PutMapping(path = "/user/{username}")
+    @PreAuthorize("hasRole('ROLE_ADMIN') or (#username == authentication.name and #user['role']==null)")
+    public ResponseEntity<Object> updateUser(@RequestBody Map<String, Object> user,
+            @PathVariable String username) {
         try {
-            UserPrincipal user = jwtUtil.getUserFromToken(token);
-            if (null != user.getUsername()) {
-                return new ResponseEntity<>(user.getUsername(), HttpStatus.OK);
+            User updatedUser = createUpdateUserService.updateUserFromMap(user, username);
+            if (null == updatedUser) {
+                return ResponseEntity.notFound().build();
             }
-            return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
+            return new ResponseEntity<>(userRepository.save(updatedUser), HttpStatus.OK);
+        } catch (Exception e) {
+            return ResponseEntity.unprocessableEntity().body(e.getMessage());
+        }
+    }
+
+    // DELETE
+    @DeleteMapping(path = "/user/{username}")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public ResponseEntity<Object> deleteUser(@PathVariable String username) {
+        try {
+            Optional<User> optional = userRepository.findByUsername(username);
+            if (optional.isPresent()) {
+                userRepository.delete(optional.get());
+                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            }
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         } catch (Exception e) {
             return ResponseEntity.unprocessableEntity().body(e.getMessage());
         }

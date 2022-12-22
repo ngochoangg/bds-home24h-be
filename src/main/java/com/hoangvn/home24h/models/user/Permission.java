@@ -8,6 +8,14 @@ public class Permission extends BaseEntity {
     private String permissionName;
     private String permissionKey;
 
+    public Permission() {
+    }
+
+    public Permission(String permissionName, String permissionKey) {
+        this.permissionName = permissionName;
+        this.permissionKey = permissionKey;
+    }
+
     public String getPermissionName() {
         return permissionName;
     }

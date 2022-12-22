@@ -1,12 +1,17 @@
 package com.hoangvn.home24h.services;
 
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.hoangvn.home24h.models.user.Role;
 import com.hoangvn.home24h.models.user.User;
 import com.hoangvn.home24h.repository.user.IRoleRepository;
 import com.hoangvn.home24h.repository.user.IUserRepository;
@@ -18,6 +23,8 @@ public class UserCreateUpdateService {
     IRoleRepository roleRepository;
     @Autowired
     IUserRepository userRepository;
+
+    ModelMapper modelMapper = new ModelMapper();
 
     /**
      * @param user <== Map < String, Object >
@@ -45,35 +52,41 @@ public class UserCreateUpdateService {
      */
 
     public User createFromMap(Map<String, Object> user) {
-
-        ObjectMapper mapper = new ObjectMapper();
-        return mapper.convertValue(user, User.class);
+        User newUser = modelMapper.map(user, User.class);
+        newUser.setPassword(new BCryptPasswordEncoder().encode(newUser.getPassword()));
+        return newUser;
     }
 
     public User updateUserFromMap(Map<String, Object> user, String username) {
         Optional<User> optional = userRepository.findByUsername(username);
-        if (optional.isPresent()) {
-            User thisUser = optional.get();
-            user.entrySet().forEach(kv -> {
-                if ("username".equals(kv.getKey())) {
-                    thisUser.setUsername(kv.getValue().toString());
-                }
-                if ("hoTen".equals(kv.getKey())) {
-                    thisUser.setHoTen(kv.getValue().toString());
-                }
-                if ("soDienThoai".equals(kv.getKey())) {
-                    thisUser.setSoDienThoai(kv.getValue().toString());
-                }
-                if ("email".equals(kv.getKey())) {
-                    thisUser.setEmail(kv.getValue().toString());
-                }
-                if ("diaChi".equals(kv.getKey())) {
-                    thisUser.setDiaChi(kv.getValue().toString());
-                }
-            });
-            return thisUser;
+        if (optional.isEmpty()) {
+            return null;
         }
+        User updatedUser = optional.get();
+        modelMapper.map(user, updatedUser);
+        if (user.containsKey("role")) {
+            Set<Role> roles = extractRoleFromMap(user);
+            updatedUser.setRole(roles);
+        }
+        updatedUser.setPassword(new BCryptPasswordEncoder().encode(updatedUser.getPassword()));
 
-        return null;
+        return updatedUser;
+    }
+
+    // Role check and return
+    private Set<Role> extractRoleFromMap(Map<String, Object> user) {
+        Set<Role> roles = new HashSet<>();
+        Object rolesVal = user.get("role");
+        if (rolesVal instanceof String) {
+            Role role = roleRepository.findByRoleKey((String) rolesVal);
+            roles.add(role);
+        } else if (rolesVal instanceof Collection) {
+            Collection<String> roleNames = (Collection<String>) rolesVal;
+            roleNames.forEach(r -> {
+                Role role = roleRepository.findByRoleKey(r);
+                roles.add(role);
+            });
+        }
+        return roles;
     }
 }
