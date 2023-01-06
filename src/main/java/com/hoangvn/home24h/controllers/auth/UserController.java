@@ -104,8 +104,8 @@ public class UserController {
     }
 
     @GetMapping("/roles")
-    @PreAuthorize("hasAuthority('CREATE')")
-    public ResponseEntity<Object> getRole(@RequestBody(required = false) String username) {
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_MANAGER') or #username == authentication.name")
+    public ResponseEntity<Object> getRole(@RequestParam(required = false) String username) {
         try {
             Optional<User> optional = userRepository.findByUsername(username);
             if (optional.isPresent()) {

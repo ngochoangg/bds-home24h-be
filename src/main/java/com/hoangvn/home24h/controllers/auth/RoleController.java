@@ -35,7 +35,7 @@ public class RoleController {
         }
     }
 
-    @PostMapping(params = "/role")
+    @PostMapping(path = "/role")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<Object> createRole(@Valid @RequestBody Map<String, Object> roleMap) {
         try {

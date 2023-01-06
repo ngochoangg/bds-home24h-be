@@ -51,6 +51,7 @@ public class BaiDangController {
     public ResponseEntity<Object> createPost(@RequestBody Map<@NotEmpty String, Object> baiMoi) {
         try {
             BaiDang saved = postService.convertToBaiDang(baiMoi);
+            saved.setStatus("open");
             saved.setNgayTao(new Date());
             return new ResponseEntity<>(baiDangRepository.save(saved), HttpStatus.CREATED);
         } catch (Exception e) {
