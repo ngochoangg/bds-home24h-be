@@ -69,7 +69,7 @@ public class BaiDang {
 
     @JoinColumn(name = "user_id")
     @ManyToOne
-    @JsonIgnoreProperties({ "role", "hoTen", "password", "diaChi", "soDienThoai", "email" })
+    @JsonIgnoreProperties({ "role", "hoTen", "password", "diaChi", "email" })
     private User user;
 
     @Temporal(TemporalType.TIMESTAMP)
