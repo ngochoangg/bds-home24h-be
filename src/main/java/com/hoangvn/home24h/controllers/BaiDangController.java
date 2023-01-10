@@ -67,9 +67,7 @@ public class BaiDangController {
             @RequestParam(defaultValue = "10", required = false) String s) {
         try {
             Pageable pageWithTen = PageRequest.of(Integer.parseInt(p), Integer.parseInt(s));
-            List<BaiDang> list = new ArrayList<>();
-            baiDangRepository.findAll(pageWithTen).forEach(list::add);
-            return new ResponseEntity<>(list, HttpStatus.OK);
+            return new ResponseEntity<>(baiDangRepository.findAll(pageWithTen).getContent(), HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -79,6 +77,18 @@ public class BaiDangController {
     public ResponseEntity<Object> getLastestPost(@RequestParam(required = false, defaultValue = "6") String post) {
         try {
             return new ResponseEntity<>(baiDangRepository.findByNgayTaoChuaBan(Long.parseLong(post)), HttpStatus.OK);
+        } catch (Exception e) {
+            return ResponseEntity.unprocessableEntity().body(e.getMessage());
+        }
+    }
+
+    @GetMapping(path = "/post")
+    public ResponseEntity<Object> getPostWithPage(@RequestParam(required = false, defaultValue = "0") String p,
+            @RequestParam(required = false, defaultValue = "6") String s) {
+        try {
+            Pageable pageLength = PageRequest.of(Integer.parseInt(p), Integer.parseInt(s));
+            return new ResponseEntity<>(baiDangRepository.findByNgayTaoChuaBanPageable(pageLength).getContent(),
+                    HttpStatus.OK);
         } catch (Exception e) {
             return ResponseEntity.unprocessableEntity().body(e.getMessage());
         }
