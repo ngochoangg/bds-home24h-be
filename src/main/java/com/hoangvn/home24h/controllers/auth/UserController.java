@@ -50,7 +50,6 @@ public class UserController {
         roleUser.add(roleRepository.findByRoleKey("ROLE_USER"));
         try {
             User newUser = createUpdateUserService.createFromMap(newuser);
-            newUser.setPassword(new BCryptPasswordEncoder().encode(newUser.getPassword()));
             newUser.setRole(roleUser);
             return new ResponseEntity<>(userRepository.save(newUser), HttpStatus.CREATED);
 
