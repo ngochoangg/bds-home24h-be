@@ -35,7 +35,7 @@ build/
 ### resource ###
 **/application.properties
 ### Security secret key ###
-**/JwtUtil.java
+# **/JwtUtil.java
 
 # What you need to do is the following:
 
